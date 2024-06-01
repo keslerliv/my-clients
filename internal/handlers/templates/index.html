@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Clients</title>
+
+    <!-- styles import -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css"
+    />
+
+    <!-- scripts import -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+
+    <style>
+      /* container styles */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #5c6c85;
+
+        color: #fff;
+      }
+
+      .container {
+        padding: 20px;
+        margin: auto;
+        width: 100%%;
+        max-width: 1300px;
+      }
+
+      /* form styles */
+      form {
+        margin-top: 40px;
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        color: #333333;
+      }
+
+      .load-file-content {
+        display: flex;
+        align-items: center;
+      }
+
+      .custom-file-upload:hover {
+        background-color: #0056b3;
+      }
+
+      .load-file {
+        padding: 10px;
+        border: 0;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        background-color: #089f43;
+      }
+
+      .load-message {
+        margin: 0;
+        margin-bottom: 1rem;
+        color: #333333;
+      }
+
+      /* button styles */
+      .submit-button {
+        margin-left: 1rem;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .submit-button:hover {
+        background-color: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- clients list table -->
+      <table id="myTable" class="display">
+        <thead>
+          <tr>
+            <th>CPF</th>
+            <th>Private</th>
+            <th>Incompleto</th>
+            <th>Data última compra</th>
+            <th>Ticket médio</th>
+            <th>Ticket ultima compra</th>
+            <th>Loja mais frequente</th>
+            <th>Loja ultima compra</th>
+          </tr>
+        </thead>
+      </table>
+      <!-- end clients list table -->
+
+      <!-- send upload form -->
+      <form id="uploadForm">
+        <p class="load-message">Faça envio de um arquivo .txt</p>
+        <div class="load-file-content">
+          <input type="file" id="fileInput" accept=".txt" required />
+          <button class="submit-button" type="submit">Enviar Arquivo</button>
+        </div>
+      </form>
+      <!-- end send upload form -->
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        // load table
+        $("#myTable").DataTable({
+          ajax: {
+            url: "/client/",
+            dataSrc: "",
+          },
+          columns: [
+            { data: "cpf" },
+            { data: "private" },
+            { data: "incomplete" },
+            { data: "date_last_purchase" },
+            { data: "average_ticket" },
+            { data: "ticket_last_purchase" },
+            { data: "frequent_store" },
+            { data: "last_store" },
+          ],
+        });
+
+        // upload file form
+        $("#uploadForm").on("submit", function (event) {
+          event.preventDefault();
+
+          var formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+
+          // send upload file request
+          $.ajax({
+            url: "/client/upload",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              alert("Arquivo enviado com sucesso!");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              alert("Falha no envio do arquivo.");
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
