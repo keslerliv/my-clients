@@ -1,5 +1,3 @@
-# Backend Template Go
-
 This repository contains a Go backend project with a CRUD for clients.
 What you can do here:
 
